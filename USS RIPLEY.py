@@ -3,7 +3,7 @@ import random
 import os
 
 ################### Start of Global Variables ###################
-Version = 0.25
+Version = 0.26
 
 lives = 10
 player_name = ""
@@ -11,7 +11,7 @@ navigation_key = False
 medical_bay_key = False
 engine_room_key = False
 holodeck_key = False
-Storage_key = False
+storage_key  = False
 debug = True
 
 ################### Start of Global function ###################
@@ -76,7 +76,7 @@ def yes_no_input(text):
 
 
 def storage_room_start():
-    global Storage_key
+    global storage_key 
     hit_or_stike_game()
     print("t")
 
@@ -202,7 +202,7 @@ def dealer_turn():
     global users_cards
     global user_bust
     global dealer_bust
-    global Storage_key
+    global storage_key 
     global lives
     dealer_total = get_total(dealer_cards,dealer_bust)
     users_total = get_total(users_cards,user_bust)
@@ -248,7 +248,7 @@ def dealer_turn():
             time.sleep(5)
 
         
-        Storage_key = True
+        storage_key  = True
         Corridor()
     else:
         if get_total(users_cards, user_bust) > 21:
@@ -2059,7 +2059,7 @@ def Corridor():
     global medical_bay_key
     global engine_room_key
     global holodeck_key
-    global Storage_key
+    global storage_key 
     global debug
     global lives  
     clear_screen() 
@@ -2094,7 +2094,7 @@ def Corridor():
             true_false_converter(engine_room_key), # 1
             true_false_converter(holodeck_key),    # 2
             true_false_converter(medical_bay_key), # 3
-            true_false_converter(Storage_key),     # 4
+            true_false_converter(storage_key ),     # 4
             Corridor_flight_deck_status(),         # 5
             Corridor_flight_deck_blocker(),        # 6
             lives*10 ) )                              # 7
@@ -2139,7 +2139,7 @@ def Corridor():
         else:
             medical_bay_start()
     elif room_number == 5:
-        if Storage_key:
+        if storage_key :
             print("You have already completed this room")
             if debug == False:
                 time.sleep(5)
