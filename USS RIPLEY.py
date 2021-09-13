@@ -1,4 +1,4 @@
-############### V0.22 ###############
+############### V0.23 ###############
 import time
 import random
 import os
@@ -237,20 +237,6 @@ def start_game(): ##Game function wrapper to send user to beginning if they fail
 
 ####################################### Starting Of Navigation Room ######################################
 
-
-navigation_jumbled_words = [
-    "pernusam" , # 1
-    "shpiaceps",  # 2
-    "opolisnxe", # 3
-    "gninreee",  # 4
-    "ilaen",     # 5
-    "tocnbii",   # 6
-    "yhpont",    # 7
-    "netgrei",   # 8
-    "vartaa",    # 9
-    "ianmujj",   # 10
-]
-
 navigation_actual_words = [
     "superman" , # 1
     "spaceship", # 2
@@ -264,9 +250,22 @@ navigation_actual_words = [
     "jumanji",   # 10
 ]
 
+def jumble(word):
+    argsArray = []
+    data = ""
+    for i in range(len(word)):
+        argsArray.append(word[i])
+    
+    for i in range(len(word)):
+        i2 = random.randint(0,len(argsArray)-1)
+        data += argsArray[i2]
+        argsArray.pop(i2)
+    return data
+        
+        
+    
 
 def navigation_start():
-    global navigation_jumbled_words
     global navigation_key
     print_with_color("CRITICAL ERROR: Default navstate has been compromised - UNKNOWN LOCATION. Please correct 3 anagrams in order to reset stellar matrices.",2)
     current_round = 0
@@ -276,7 +275,7 @@ def navigation_start():
         terminal_text("")
         terminal_text(f"Round: {current_round}")
         terminal_text("")
-        word = random.choice(navigation_jumbled_words)
+        word = random.choice(navigation_actual_words)
         navigation_2(word)
     print("")
     print("You have been given a keycard")
@@ -292,9 +291,9 @@ def navigation_2(word):
     global navigation_actual_words
     global lives
 
-    word_index = navigation_jumbled_words.index(word)
+    word_index = navigation_actual_words.index(word)
 
-    terminal_text (f"Un-jumble this word: \u001b[33m{word}\u001b[0m")
+    terminal_text (f"Un-jumble this word: \u001b[33m{jumble(word)}\u001b[0m")
     entered_word = (input("please enter your answer: ").lower().strip())
     if entered_word == "":
         print("Invalid Input")
@@ -304,8 +303,7 @@ def navigation_2(word):
             entered_word_index = navigation_actual_words.index(entered_word)
             if word_index == entered_word_index:
                 terminal_text(f"{entered_word} is \u001b[32mcorrect!\u001b[0m")
-                navigation_jumbled_words.pop(word_index)
-                navigation_actual_words.pop(entered_word_index) 
+                navigation_actual_words.pop(word_index)
             else:
                 
                 lives -= 1;
