@@ -4,7 +4,7 @@ A RPG game made by Ripleys Roughnecks Team for Code Nation Develop course
 
 # Ripleys Roughnecks Team
 
-Alexander Wayland (https://github.com/aj-bress)
+Alexander Wayland (https://github.com/web-lynx/)
 
 Christopher Boardman (ME)
 
