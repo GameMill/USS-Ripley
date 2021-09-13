@@ -1,11 +1,9 @@
-############### V0.23 ###############
 import time
 import random
 import os
 
-
-
 ################### Start of Global Variables ###################
+Version = 0.24
 
 lives = 10
 player_name = ""
@@ -13,7 +11,7 @@ navigation_key = False
 medical_bay_key = False
 engine_room_key = False
 holodeck_key = False
-debug = False
+debug = True
 
 ################### Start of Global function ###################
 
@@ -176,7 +174,9 @@ def start_game(): ##Game function wrapper to send user to beginning if they fail
     global lives
 
     ##INTRODUCTION SCENE
-    print("""\u001b[32m
+    print(f"""
+Game Version: V{Version}
+    \u001b[32m
      ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄  ▄            ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄ 
     ▐░▌       ▐░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌          ▐░░░░░░░░░░░▌▐░▌       ▐░▌
     ▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀▀▀ ▐░█▀▀▀▀▀▀▀▀▀      ▐░█▀▀▀▀▀▀▀█░▌ ▀▀▀▀█░█▀▀▀▀ ▐░█▀▀▀▀▀▀▀█░▌▐░▌          ▐░█▀▀▀▀▀▀▀▀▀ ▐░▌       ▐░▌
