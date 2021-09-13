@@ -1,9 +1,10 @@
+from math import fabs
 import time
 import random
 import os
 
 ################### Start of Global Variables ###################
-Version = 0.24
+Version = 0.25
 
 lives = 10
 player_name = ""
@@ -11,7 +12,8 @@ navigation_key = False
 medical_bay_key = False
 engine_room_key = False
 holodeck_key = False
-debug = False
+Storage_key = False
+debug = True
 
 ################### Start of Global function ###################
 
@@ -71,9 +73,292 @@ def yes_no_input(text):
 ################### End of Global function ###################
 
 
+#################### Start of Storage room ######################
+
+
+def storage_room_start():
+    global Storage_key
+    hit_or_stike_game()
+    print("t")
+
+cards = []
+users_cards = []
+dealer_cards = []
+user_bust = False
+dealer_bust = False
+
+def restart_game():
+    global cards
+    global users_cards
+    global dealer_cards
+    global user_bust
+    global dealer_bust
+    cards = []
+    users_cards = []
+    dealer_cards = []
+    user_bust = False
+    dealer_bust = False
+    clear_screen()
+    
+
+def reset_cards():
+    global cards
+    cards = []
+    for suits in ["Heart","Diamond","Club", "Spade"]:
+        for card in range(13):
+
+            cards.append({"suits":suits,"card":card+1});
+      
+    
+def get_card_name(number):
+    if number == 13:
+        return "Ace"
+    elif number == 12:
+        return "king"
+    elif number == 11:
+        return "Quean"
+    elif number == 10:
+        return "Jack"
+    else:
+        return number
+
+def get_card_value(number,bust):
+    if number > 9:
+        if number == 13:
+            if bust:
+                return 1
+            else:
+                return 11
+        else:
+            return 10
+    else:
+        return number
+
+def hit_or_stike_game():
+    global user_bust
+    global dealer_bust
+    restart_game()
+    
+    print("")
+    print("Welcome to a game of 21. Good Luck")
+    print("")
+    reset_cards()
+    print("The Dealer shuffle the card and start drawing the cards.")
+    if(debug == False):
+        time.sleep(5)
+    draw_users_cards()
+    draw_dealer_cards()
+    user_turn()
+
+def user_input_stick_twist(text):
+    stick = ["s","stick"]
+    twist = ["t","twist"]
+    u_input = input(text).lower()
+    if u_input in stick:
+        return "s"
+    elif u_input in twist:
+        return "t"
+    else:
+        print("Invalid Input")
+        return user_input_stick_twist(text);
+
+def user_turn():
+    global users_cards
+    global user_bust
+    print("")
+    print("Your card are")
+    print("")
+    for item in range(len(users_cards)):
+        print(f"{get_card_name(users_cards[item]['card'])} of {users_cards[item]['suits']}")
+    print("")
+    u_input = user_input_stick_twist("Stick or Twist: ")
+    if u_input == "t":
+        extra_card = draw_extra_users_card()
+        print("The Dealer Drawing a card.")
+        if(debug == False):
+            time.sleep(5)
+
+        if(get_total(users_cards,False) > 21 and get_total(users_cards,True) < 21):
+            user_bust = True
+
+        if get_total(users_cards,user_bust) > 21:
+            print(f"Your extra card was {get_card_name(extra_card['card'])} of {extra_card['suits']}")
+            print("You Lose!")
+            if(debug == False):
+                time.sleep(5)
+            hit_or_stike_game()
+        else:
+            if len(users_cards) == 5:
+                print("5 Card Trick!")
+                print("You Win!")
+                exit()
+            else:
+                user_turn()
+    else:
+        dealer_turn()
+    
+
+def dealer_turn():
+    global dealer_cards
+    global users_cards
+    global user_bust
+    global dealer_bust
+    global Storage_key
+    global lives
+    dealer_total = get_total(dealer_cards,dealer_bust)
+    users_total = get_total(users_cards,user_bust)
+
+    print("The Dealer flip his cards.")
+    if(debug == False):
+        time.sleep(3)
+    
+    print("")
+    print("dealers card are")
+    print("")
+    for item in range(len(dealer_cards)):
+        if(debug == False):
+            time.sleep(1)
+        print(f"{get_card_name(dealer_cards[item]['card'])} of {dealer_cards[item]['suits']}")
+    
+    print("Dealer is thinking")
+    if(debug == False):
+        time.sleep(5)
+    if(get_total(dealer_cards,False) > 21 and get_total(dealer_cards,True) <= 21):
+            dealer_bust = True
+
+    if get_total(dealer_cards,dealer_bust) >= get_total(users_cards,user_bust) and get_total(dealer_cards,dealer_bust) <= 21:
+        lives -= 1
+        if lives == 0:
+            game_over()
+        print("You Lose!")
+        if(debug == False):
+            time.sleep(5)
+        hit_or_stike_game() 
+    if dealer_total < 15 or get_total(dealer_cards,True) < 10 or get_total(dealer_cards,dealer_bust) < get_total(users_cards,user_bust) and get_total(dealer_cards,dealer_bust) < 21:
+        card = draw_extra_dealer_card()
+        print("Dealer draws an extra card")
+        if(debug == False):
+            time.sleep(5)
+        print(f"the Dealer extra card was {get_card_name(card['card'])} of {card['suits']}")
+            
+        dealer_turn()
+    elif get_total(dealer_cards,dealer_bust) > 21:
+        print("Dealer is bust")
+        print("You Win!")
+        if(debug == False):
+            time.sleep(5)
+
+        
+        Storage_key = True
+        Corridor()
+    else:
+        if get_total(users_cards, user_bust) > 21:
+            lives -= 1
+            if lives == 0:
+                game_over()
+            print("You Lose!")
+            if(debug == False):
+                time.sleep(5)
+            hit_or_stike_game()    
+        elif get_total(dealer_cards, dealer_bust) > 21:
+            print("You Win!")
+            Corridor()
+        elif users_total > dealer_total:
+            print("You Win!")
+            Corridor()
+        elif users_total < dealer_total:
+            lives -= 1
+            if lives == 0:
+                game_over()
+            print("You Lose!")
+            if(debug == False):
+                time.sleep(5)
+            hit_or_stike_game()
+        else:
+            lives -= 1
+            if lives == 0:
+                game_over()
+            print("Draw. Sorry i mean you Lose!")
+            if(debug == False):
+                time.sleep(5)
+            hit_or_stike_game()
+    
+def get_total(cards,bust):
+    total = 0
+    for item in cards:
+        total += get_card_value(item["card"],bust)
+    return total
+    
+
+def draw_extra_users_card():
+    global users_cards
+    global cards
+    card1_index = random.randint(0,len(cards)-1)
+    card1= cards[card1_index]
+    cards.pop(card1_index)
+    users_cards.append(card1)
+    return card1
+
+def draw_extra_dealer_card():
+    global dealer_cards
+    global cards
+    card1_index = random.randint(0,len(cards)-1)
+    card1= cards[card1_index]
+    cards.pop(card1_index)
+    dealer_cards.append(card1)
+    return card1
+
+
+def draw_users_cards():
+    global cards
+    global users_cards
+
+    card1_index = random.randint(0,len(cards)-1)
+
+    card2_index = random.randint(0,len(cards)-1)
+    while card1_index == card2_index:
+        card2 = random.randint(0,len(cards)-1)
+
+
+    card1 = cards[card1_index];
+    card2= cards[card2_index]
+    if card1_index < card2_index:
+        cards.pop(card2_index)
+        cards.pop(card1_index)
+    else:
+        cards.pop(card1_index)
+        cards.pop(card2_index)
+
+    users_cards = [card1,card2]
+
+def draw_dealer_cards():
+    global cards
+    global dealer_cards
+
+    card1_index = random.randint(0,len(cards)-1)
+
+    card2_index = random.randint(0,len(cards)-1)
+    while card1_index == card2_index:
+        card2 = random.randint(0,len(cards)-1)
+
+
+    card1 = cards[card1_index];
+    card2 = cards[card2_index]
+    
+    if card1_index < card2_index:
+        cards.pop(card2_index)
+        cards.pop(card1_index)
+    else:
+        cards.pop(card1_index)
+        cards.pop(card2_index)
+
+    dealer_cards = [card1,card2]
 
 
 
+
+
+#################### End of Storage room #########################
 def game_over(died_in_boss_fight):
     if died_in_boss_fight:
         print("""
@@ -845,9 +1130,9 @@ l` \` `.`."`-..,-' j  /./ /, , / , / /l \   \=\l   || `' || ||...
         time.sleep(10)
 
     alien_health_visual = ""
-    alien_health = float(200)
+    alien_health = 100
     player_health_visual = ""
-    player_health = float(200)
+    player_health = lives*20
     if debug == False:
         time.sleep(2)
     turn = "player"
@@ -882,7 +1167,7 @@ l` \` `.`."`-..,-' j  /./ /, , / , / /l \   \=\l   || `' || ||...
 
        
         player_health_visual = get_health_visual(player_health/2,"Player","");
-        alien_health_visual = get_health_visual(alien_health/2, " Alien","\n\n");
+        alien_health_visual = get_health_visual(alien_health, " Alien","\n\n");
 
 
         # Begin the game itself. PLAYERS TURN
@@ -1775,28 +2060,29 @@ def Corridor():
     global medical_bay_key
     global engine_room_key
     global holodeck_key
+    global Storage_key
     global debug
     global lives  
     clear_screen() 
     print("""
-    Lives: {6}
+    Health: {7}%
 
              Ship Map
              ┌───────┐
             ┌┘◘◘◘◘◘◘◘└┐
         ┌───┘◘       ◘└───┐
-        │     Room 5      │  
-        │                 │   Navigation = 1 {0}
-        ├──────┐   ┌──────┤  Engine room = 2 {1}
-        │ Room │▬{5}▬│ Room │     Holodeck = 3 {2}
-        │   4  │   │  3   │  Medical bay = 4 {3}
-        │      │   │      │  Flight deck = 5 {4}
-        │      │   │      │  
+        │     Room 6      │  
+        │                 │    Navigation = 1 {0}
+        ├──────┐   ┌──────┤   Engine room = 2 {1}
+        │ Room │▬{6}▬│ Room │      Holodeck = 3 {2}
+        │   4  │   │  5   │   Medical bay = 4 {3}
+        │      │   │      │  Storage room = 5 {4}
+        │      │   │      │   Flight deck = 6 {5}
         │      │   │      │
         │      ░   ░      │
         ├──────┤   ├──────┤
         │ Room │   │ Room │
-        │  ?   ░   ░  2   │
+        │  2   ░   ░  3   │
         │      │   │      │
         │      │   │      │
         │      │   │      │
@@ -1809,14 +2095,15 @@ def Corridor():
             true_false_converter(engine_room_key), # 1
             true_false_converter(holodeck_key),    # 2
             true_false_converter(medical_bay_key), # 3
-            Corridor_flight_deck_status(),         # 4
-            Corridor_flight_deck_blocker(),        # 5
-            lives ) )                              # 6
+            true_false_converter(Storage_key),     # 4
+            Corridor_flight_deck_status(),         # 5
+            Corridor_flight_deck_blocker(),        # 6
+            lives*10 ) )                              # 7
 
     if debug == False:
         time.sleep(5)
 
-    room_number = int_input("Please choose a room number from the list above (1, 2, 3, 4, 5): ",1,5)
+    room_number = int_input("Please choose a room number from the list above (1, 2, 3, 4, 5, 6): ",1,6)
 
     clear_screen()
 
@@ -1853,6 +2140,14 @@ def Corridor():
         else:
             medical_bay_start()
     elif room_number == 5:
+        if Storage_key:
+            print("You have already completed this room")
+            if debug == False:
+                time.sleep(5)
+            Corridor()
+        else:
+            storage_room_start()
+    elif room_number == 6:
         if navigation_key and medical_bay_key and engine_room_key and holodeck_key:
             flight_deck_start()
         else:
