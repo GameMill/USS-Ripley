@@ -4,16 +4,16 @@ A RPG game made by Ripleys Roughnecks Team for Code Nation Develop course
 
 # Ripleys Roughnecks Team
 
-Alexander Wayland (https://github.com/aj-bress)
+Alexander Wayland (https://github.com/aj-bress) V0.00 - V0.22
 
-Christopher Boardman (ME)
+Christopher Boardman (ME) V0.00 - Current
 
-Dyllan Whitney (https://github.com/dyllanwhitney/)
+Dyllan Whitney (https://github.com/dyllanwhitney/) V0.00 - V0.22
 
-John Bress (https://github.com/aj-bress)
+John Bress (https://github.com/aj-bress) V0.00 - V0.22
 
-Jon Fincham ( N/A )
+Jon Fincham ( N/A ) V0.00 - V0.22
 
-Kurtis Chamberlain (https://github.com/kurtischamberlain)
+Kurtis Chamberlain (https://github.com/kurtischamberlain) V0.00 - V0.22
 
-Pip Allen ( N/A )
+Pip Allen ( N/A ) V0.00 - V0.22
