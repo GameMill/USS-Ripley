@@ -11,7 +11,7 @@ navigation_key = False
 medical_bay_key = False
 engine_room_key = False
 holodeck_key = False
-debug = True
+debug = False
 
 ################### Start of Global function ###################
 
